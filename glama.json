@@ -1,18 +1,3 @@
 {
-  "name": "nefesh-mcp-server",
-  "display_name": "Nefesh — Real-Time Human State Awareness",
-  "description": "Remote MCP server that fuses cardiovascular, vocal, visual, and textual signals into a unified stress score (0-100). Enables AI agents to adapt responses based on real-time physiological state.",
-  "categories": ["health", "wellness", "biometrics"],
-  "tags": ["stress-detection", "ai-empathy", "wearable", "heart-rate", "hrv", "mcp", "streamable-http"],
-  "homepage": "https://nefesh.ai",
-  "documentation": "https://nefesh.ai/llms-full.txt",
-  "pricing": "https://nefesh.ai/pricing",
-  "transport": {
-    "type": "streamable-http",
-    "url": "https://mcp.nefesh.ai/mcp"
-  },
-  "authentication": {
-    "type": "header",
-    "header": "X-Nefesh-Key"
-  }
+  "maintainers": ["tomstuhl"]
 }
