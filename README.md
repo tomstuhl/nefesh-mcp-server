@@ -6,7 +6,7 @@ A [Model Context Protocol](https://modelcontextprotocol.io) server that gives AI
 
 Your AI agent sends sensor data (heart rate, voice, video, text) via the Nefesh API. The MCP server returns a unified stress score (0–100), a state label (Calm → Acute Stress), and an adaptation prompt that tells the agent how to adjust its behavior.
 
-**Signals supported:** cardiovascular (HR, HRV, RR intervals), vocal (pitch, jitter, shimmer), visual (facial action units), textual (sentiment, keywords)
+**57 signal fields across 10 categories.** Send any combination per API call — cardiovascular, vocal, visual, textual, metabolic, neural, electrodermal, respiratory, movement, and sleep.
 
 ## Setup
 
@@ -117,11 +117,11 @@ All agents connect via [Streamable HTTP](https://modelcontextprotocol.io/specifi
 
 | Tool | Description |
 |------|-------------|
-| `ingest_signal` | Send raw sensor data. Returns unified stress score + state + adaptation prompt. |
-| `get_state` | Get current physiological state for a session. |
-| `get_trigger_memory` | Retrieve psychological trigger profile for a subject. Shows which topics cause stress and which have been resolved. |
-| `get_history` | Get state history over time for a session. |
-| `delete_subject` | GDPR-compliant deletion of all data for a subject. |
+| `get_human_state` | Returns current stress state, score (0–100), and confidence for a session |
+| `ingest` | Send biometric signals — heart rate, voice tone, facial expression, sentiment, and 50+ more fields |
+| `get_session_history` | Returns chronological state history for a session |
+| `get_trigger_memory` | Returns psychological trigger profile — which topics cause stress, active vs. resolved |
+| `delete_subject` | Deletes all stored data for a subject (GDPR compliance) |
 
 ## Quick test
 
@@ -141,6 +141,42 @@ It should list the tools above.
 | 60–79 | Stressed |
 | 80–100 | Acute Stress |
 
+## Trigger Memory
+
+Nefesh doesn't just read the current state — it remembers what stresses each user.
+
+Send `user_message` and `ai_response` alongside biometric signals to the `ingest` tool. Nefesh automatically extracts psychological topics and tracks how stress correlates with specific subjects over time.
+
+Query a user's trigger profile with `get_trigger_memory`:
+
+```json
+{
+  "triggers": {
+    "work_deadline": { "status": "active", "avg_stress": 74, "sessions": 5 },
+    "relationship": { "status": "resolved", "avg_stress": 31, "sessions": 3 }
+  },
+  "active": ["work_deadline"],
+  "resolved": ["relationship"]
+}
+```
+
+**Active** = currently causing elevated stress. **Resolved** = stress has decreased below threshold.
+
+## Supported Signals
+
+| Category | Fields | Status |
+|----------|--------|--------|
+| Cardiovascular | heart_rate, rmssd, sdnn, pnn50, mean_ibi, ibi_count, spo2 | Fused |
+| Vocal | tone, speech_rate, pitch_variability | Fused |
+| Visual | expression, gaze, posture, engagement | Fused |
+| Textual | sentiment (-1.0 to 1.0), urgency | Fused |
+| Metabolic | glucose_mg_dl, glucose_mmol_l, glucose_trend | Accepted |
+| Neural | eeg_alpha_power, eeg_beta_power, eeg_theta_power, cognitive_load | Accepted |
+| Electrodermal | eda, skin_temperature | Accepted |
+| Respiratory | respiratory_rate | Accepted |
+| Movement | steps_last_minute, activity_level | Accepted |
+| Sleep | sleep_stage | Accepted |
+
 ## Documentation
 
 - [Quick Start](https://nefesh.ai/docs/quickstart)
@@ -151,7 +187,7 @@ It should list the tools above.
 
 - No video uploads — edge processing runs client-side
 - No PII stored — strict schema validation
-- GDPR/BIPA compliant — cascading deletion via `delete_subject`
+- GDPR compliant — cascading deletion via `delete_subject`
 - Not a medical device — for contextual AI adaptation only
 
 ## License
