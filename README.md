@@ -4,7 +4,7 @@ A [Model Context Protocol](https://modelcontextprotocol.io) server that gives AI
 
 ## What it does
 
-Your AI agent sends sensor data (heart rate, voice, video, text) via the Nefesh API. The MCP server returns a unified stress score (0–100), a state label (Calm → Acute Stress), and an adaptation prompt that tells the agent how to adjust its behavior.
+Your AI agent sends sensor data (heart rate, voice, video, text) via the Nefesh API. The MCP server returns a unified stress score (0-100), a state label (Calm → Acute Stress), and an adaptation prompt that tells the agent how to adjust its behavior.
 
 **Signals supported:** cardiovascular (HR, HRV, RR intervals), vocal (pitch, jitter, shimmer), visual (facial action units), textual (sentiment, keywords)
 
@@ -12,7 +12,9 @@ Your AI agent sends sensor data (heart rate, voice, video, text) via the Nefesh 
 
 ### 1. Get an API key
 
-Get your key at [nefesh.ai/pricing](https://nefesh.ai/pricing) ($25/month, 50,000 calls).
+Get a free key at [nefesh.ai/signup](https://nefesh.ai/signup) — 1,000 API calls/month, no credit card required.
+
+Need more? [Solo plan](https://nefesh.ai/pricing) at $25/month for 50,000 calls.
 
 ### 2. Add to your AI agent
 
@@ -119,8 +121,8 @@ All agents connect via [Streamable HTTP](https://modelcontextprotocol.io/specifi
 |------|-------------|
 | `get_human_state` | Returns current stress state, score (0-100), and confidence for a session |
 | `ingest` | Send biometric signals — heart rate, voice tone, facial expression, sentiment, and 50+ more fields |
-| `get_session_history` | Returns chronological state history for a session |
 | `get_trigger_memory` | Returns psychological trigger profile — which topics cause stress, active vs. resolved |
+| `get_session_history` | Returns chronological state history for a session |
 | `delete_subject` | Deletes all stored data for a subject (GDPR compliance) |
 
 ## Trigger Memory
@@ -162,10 +164,10 @@ Response:
 
 | Category | Fields | Fused in v1 |
 |----------|--------|-------------|
-| Cardiovascular | heart_rate, rmssd, sdnn, pnn50, mean_ibi, ibi_count, spo2 | ✅ |
-| Vocal | tone, speech_rate, pitch_variability | ✅ |
-| Visual | expression, gaze, posture, engagement | ✅ |
-| Textual | sentiment (-1.0 to 1.0), urgency | ✅ |
+| Cardiovascular | heart_rate, rmssd, sdnn, pnn50, mean_ibi, ibi_count, spo2 | Yes |
+| Vocal | tone, speech_rate, pitch_variability | Yes |
+| Visual | expression, gaze, posture, engagement | Yes |
+| Textual | sentiment (-1.0 to 1.0), urgency | Yes |
 | Metabolic | glucose_mg_dl, glucose_mmol_l, glucose_trend | Planned |
 | Neural | eeg_alpha_power, eeg_beta_power, eeg_theta_power, cognitive_load | Planned |
 | Electrodermal | eda, skin_temperature | Planned |
@@ -187,15 +189,27 @@ It should list the 5 tools above.
 
 | Score | State |
 |-------|-------|
-| 0–19 | Calm |
-| 20–39 | Relaxed |
-| 40–59 | Focused |
-| 60–79 | Stressed |
-| 80–100 | Acute Stress |
+| 0-19 | Calm |
+| 20-39 | Relaxed |
+| 40-59 | Focused |
+| 60-79 | Stressed |
+| 80-100 | Acute Stress |
+
+## Pricing
+
+| Plan | Price | API Calls | Rate Limit |
+|------|-------|-----------|------------|
+| **Free** | $0 | 1,000/month | 10 req/min |
+| **Solo** | $25/month | 50,000/month | 120 req/min |
+| **Enterprise** | Custom | Unlimited | Custom SLA |
+
+Get your free key at [nefesh.ai/signup](https://nefesh.ai/signup). No credit card required.
 
 ## Authentication
 
-API Key Format: `nfsh_...` — get yours at [nefesh.ai/pricing](https://nefesh.ai/pricing) ($25/month, 50,000 calls).
+API Key Format: `nfsh_...` — get yours at [nefesh.ai/signup](https://nefesh.ai/signup).
+
+Pass it via the `X-Nefesh-Key` header in your MCP config (see setup above).
 
 ## Documentation
 
@@ -213,4 +227,3 @@ API Key Format: `nfsh_...` — get yours at [nefesh.ai/pricing](https://nefesh.a
 ## License
 
 MIT — see [LICENSE](LICENSE).
-
