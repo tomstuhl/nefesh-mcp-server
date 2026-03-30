@@ -4,9 +4,9 @@ A [Model Context Protocol](https://modelcontextprotocol.io) server that gives AI
 
 ## What it does
 
-Your AI agent sends sensor data (heart rate, voice, video, text) via the Nefesh API. The MCP server returns a unified stress score (0-100), a state label (Calm → Acute Stress), a `suggested_action` your agent can follow directly, and an `action_reason` explaining why.
+Your AI agent sends sensor data (heart rate, voice, video, text) via the Nefesh API. The MCP server returns a unified stress score (0-100), a state label (Calm → Acute Stress), a `suggested_action` your agent can follow directly, an `action_reason` explaining why, and `adaptation_effectiveness` showing whether the previous action actually worked.
 
-**Zero prompt engineering required.** The agent gets a machine-readable action (`de-escalate_and_shorten`, `pause_and_ground`, etc.) and adapts automatically.
+**Zero prompt engineering required.** The agent gets a machine-readable action (`de-escalate_and_shorten`, `pause_and_ground`, etc.) and adapts automatically. On the 2nd+ call, the agent learns whether its previous approach reduced stress — a closed-loop feedback system.
 
 **Signals supported:** cardiovascular (HR, HRV, RR intervals), vocal (pitch, jitter, shimmer), visual (facial action units), textual (sentiment, keywords)
 
@@ -122,7 +122,7 @@ All agents connect via [Streamable HTTP](https://modelcontextprotocol.io/specifi
 | Tool | Description |
 |------|-------------|
 | `get_human_state` | Returns current stress state, score (0-100), confidence, `suggested_action`, and `action_reason` for a session |
-| `ingest` | Send biometric signals — heart rate, voice tone, facial expression, sentiment, and 50+ more fields. Returns state + action. |
+| `ingest` | Send biometric signals — heart rate, voice tone, facial expression, sentiment, and 50+ more fields. Returns state + action + adaptation feedback. |
 | `get_trigger_memory` | Returns psychological trigger profile — which topics cause stress, active vs. resolved |
 | `get_session_history` | Returns chronological state history for a session |
 | `delete_subject` | Deletes all stored data for a subject (GDPR compliance) |
@@ -139,7 +139,7 @@ Every API response includes a `suggested_action` your agent can follow directly 
 | 60-79 | Stressed | `de-escalate_and_shorten` | Max 2 sentences. Direct, factual, no ambiguity. |
 | 80-100 | Acute Stress | `pause_and_ground` | Max 1 sentence. Single directive only. |
 
-Example response:
+Example response (first call):
 ```json
 {
   "state": "stressed",
@@ -157,6 +157,44 @@ Inject it into your system prompt in one line:
 ```
 ACTION: {suggested_action} — REASON: {action_reason}
 ```
+
+## Adaptation Feedback Loop
+
+On the 2nd+ call within the same session, the response includes `adaptation_effectiveness` — a closed-loop feedback mechanism that tells your agent whether the previous action actually reduced stress.
+
+```json
+{
+  "state": "relaxed",
+  "stress_score": 28,
+  "confidence": 0.72,
+  "signals_received": ["cardiovascular", "vocal"],
+  "suggested_action": "maintain_engagement",
+  "action_reason": "heart rate signal + calm vocal tone",
+  "recommendation": "Maintain complexity. 3-5 sentences.",
+  "disclaimer": "Not a medical device. For contextual AI adaptation only.",
+  "adaptation_effectiveness": {
+    "previous_action": "de-escalate_and_shorten",
+    "previous_score": 73,
+    "current_score": 28,
+    "stress_delta": -45,
+    "effective": true
+  }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `previous_action` | string | The `suggested_action` from the previous call |
+| `previous_score` | integer | Stress score from the previous call |
+| `current_score` | integer | Stress score from this call |
+| `stress_delta` | integer | Change in stress. Negative = improvement. |
+| `effective` | boolean | `true` if stress stayed the same or decreased |
+
+**Build self-improving agents:**
+- `effective: true` → Current approach works. Continue.
+- `effective: false` → Stress increased despite the action. Try a different strategy.
+
+This is a closed-loop system: send signals → get action → follow action → check if it worked → adapt. No other API offers this.
 
 ## Trigger Memory
 
