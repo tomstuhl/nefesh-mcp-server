@@ -14,7 +14,13 @@ Your AI agent sends sensor data (heart rate, voice, video, text) via the Nefesh 
 
 ### 1. Get an API key
 
+**Option A: Sign up manually**
+
 Get a free key at [nefesh.ai/signup](https://nefesh.ai/signup) — 1,000 API calls/month, no credit card required.
+
+**Option B: Let your AI agent get one automatically**
+
+Your agent can self-provision a free API key via MCP — no manual signup needed. See [API Key Self-Provisioning](#api-key-self-provisioning) below.
 
 Need more? [Solo plan](https://nefesh.ai/pricing) at $25/month for 50,000 calls.
 
@@ -126,6 +132,8 @@ All agents connect via [Streamable HTTP](https://modelcontextprotocol.io/specifi
 | `get_trigger_memory` | Returns psychological trigger profile — which topics cause stress, active vs. resolved |
 | `get_session_history` | Returns chronological state history for a session |
 | `delete_subject` | Deletes all stored data for a subject (GDPR compliance) |
+| `request_api_key` | Request a free API key by email. Sends a verification link. No API key needed to call this tool. |
+| `check_api_key_status` | Poll for API key activation after calling `request_api_key`. Returns the key once the email link is clicked. No API key needed. |
 
 ## Agent Actions
 
@@ -229,6 +237,58 @@ Response:
 }
 ```
 
+## API Key Self-Provisioning
+
+AI agents can get their own free API key without manual signup. The developer only clicks one email link.
+
+**Flow:**
+
+1. Agent calls `request_api_key` with the developer's email
+2. API sends a verification email
+3. Developer clicks the link in the email
+4. Agent polls `check_api_key_status` every 10 seconds
+5. Once verified, the next poll returns the API key
+
+```
+Agent                       API                     Developer
+  |                          |                          |
+  |-- request_api_key ------>|                          |
+  |<-- {request_id, pending} |-- verification email --->|
+  |                          |                          |
+  |-- check_api_key_status ->|                          |
+  |<-- {status: "pending"} --|                          |
+  |                          |       clicks link ------>|
+  |-- check_api_key_status ->|                          |
+  |<-- {status: "ready",   --|                          |
+  |     api_key: "nfsh_..."} |                          |
+```
+
+Both tools work **without an API key** — they are auth-free so agents without credentials can self-provision.
+
+Response from `request_api_key`:
+```json
+{
+  "request_id": "vlsIfHPoU8NI6977Ogqb3re_csxj8_fz4Fet8IeG5_g",
+  "status": "pending",
+  "message": "Verification email sent. Call check_api_key_status every 10 seconds.",
+  "expires_in": 900
+}
+```
+
+Response from `check_api_key_status` (after verification):
+```json
+{
+  "status": "ready",
+  "api_key": "nfsh_free_6af7435b0dc5f600b7caf3a76c011c90",
+  "tier": "free",
+  "monthly_limit": 1000,
+  "rate_limit_per_minute": 10,
+  "message": "API key activated. Add as X-Nefesh-Key header."
+}
+```
+
+Free tier: 1,000 calls/month, all signal types, 10 req/min. No credit card.
+
 ## Supported Signals
 
 **57 fields across 10 categories.** Send any combination per API call.
@@ -254,7 +314,7 @@ After adding the config, ask your AI agent:
 
 > "What tools do you have from Nefesh?"
 
-It should list the 5 tools above.
+It should list the 7 tools above.
 
 ## State labels
 
@@ -278,9 +338,11 @@ Get your free key at [nefesh.ai/signup](https://nefesh.ai/signup). No credit car
 
 ## Authentication
 
-API Key Format: `nfsh_...` — get yours at [nefesh.ai/signup](https://nefesh.ai/signup).
+API Key Format: `nfsh_...` — get yours at [nefesh.ai/signup](https://nefesh.ai/signup) or let your agent self-provision one via `request_api_key`.
 
 Pass it via the `X-Nefesh-Key` header in your MCP config (see setup above).
+
+`request_api_key` and `check_api_key_status` are the only tools that work without an API key.
 
 ## Documentation
 
