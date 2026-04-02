@@ -144,15 +144,15 @@ All agents connect via [Streamable HTTP](https://modelcontextprotocol.io/specifi
 
 ## Tools
 
-| Tool | Auth required | Description |
+| Tool | Auth | Description |
 |------|:---:|-------------|
-| `request_api_key` | No | Request a free API key by email |
-| `check_api_key_status` | No | Poll for API key activation after email click |
-| `get_human_state` | Yes | Get current stress state, score, confidence, and suggested action |
-| `ingest` | Yes | Send biometric signals, get unified state back |
-| `get_trigger_memory` | Yes | Get psychological trigger profile for a subject |
-| `get_session_history` | Yes | Get state history over time |
-| `delete_subject` | Yes | Delete all stored data for a subject (GDPR) |
+| `request_api_key` | No | Request a free API key by email. Poll with `check_api_key_status` until ready. |
+| `check_api_key_status` | No | Poll for API key activation. Returns `pending` or `ready` with API key. |
+| `get_human_state` | Yes | Get stress state (0-100), `suggested_action` (maintain/simplify/de-escalate/pause), and `adaptation_effectiveness` — a closed-loop showing whether your previous action reduced stress. |
+| `ingest` | Yes | Send biometric signals (heart rate, HRV, voice tone, expression, sentiment, 30+ fields) and get unified state back. Include `subject_id` for trigger memory. |
+| `get_trigger_memory` | Yes | Get psychological trigger profile — which topics cause stress (active) and which have been resolved over time. |
+| `get_session_history` | Yes | Get timestamped state history with trend (rising/falling/stable). |
+| `delete_subject` | Yes | GDPR-compliant cascading deletion of all data for a subject. |
 
 ## How self-provisioning works
 
