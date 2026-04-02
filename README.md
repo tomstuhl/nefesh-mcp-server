@@ -1,6 +1,6 @@
-# Nefesh MCP Server
+# Nefesh MCP + A2A Server
 
-A [Model Context Protocol](https://modelcontextprotocol.io) server that gives AI agents real-time awareness of human physiological state.
+A [Model Context Protocol](https://modelcontextprotocol.io) and [Agent-to-Agent (A2A)](https://a2a-protocol.org) server that gives AI agents real-time awareness of human physiological state.
 
 ## What it does
 
@@ -142,7 +142,24 @@ mcpServers:
 
 All agents connect via [Streamable HTTP](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports) — no local installation required.
 
-## Tools
+## A2A Integration (Agent-to-Agent Protocol v1.0)
+
+Nefesh is also available as an A2A-compatible agent. While MCP handles tool-calling (your agent calls Nefesh), A2A enables agent-collaboration — other AI agents can communicate with Nefesh as a peer.
+
+**Agent Card:** [`/.well-known/agent-card.json`](https://mcp.nefesh.ai/.well-known/agent-card.json)
+
+**A2A Endpoint:** `POST https://mcp.nefesh.ai/a2a` (JSON-RPC 2.0)
+
+| A2A Skill | Description |
+|-----------|-------------|
+| `get-human-state` | Stress state (0-100), suggested_action, adaptation_effectiveness |
+| `ingest-signals` | Send biometric signals, receive unified state |
+| `get-trigger-memory` | Psychological trigger profile (active vs resolved) |
+| `get-session-history` | Timestamped history with trend |
+
+Same authentication as MCP — `X-Nefesh-Key` header or `Authorization: Bearer` token. Free tier works on both protocols.
+
+## MCP Tools
 
 | Tool | Auth | Description |
 |------|:---:|-------------|
@@ -186,6 +203,8 @@ It should list the 7 tools above.
 - [Full API Reference](https://nefesh.ai/llms-full.txt)
 - [Quick Start](https://nefesh.ai/docs/quickstart)
 - [State Mapping](https://nefesh.ai/docs/states)
+- [A2A Agent Card](https://mcp.nefesh.ai/.well-known/agent-card.json)
+- [A2A Protocol Spec](https://a2a-protocol.org/latest/specification/)
 
 ## Privacy
 

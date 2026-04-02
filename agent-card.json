@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.0",
+  "humanReadableId": "nefesh/human-state",
+  "agentVersion": "6.1.0",
+  "name": "Nefesh Human State Agent",
+  "description": "Provides real-time human physiological state awareness for AI agents. Fuses biometric signals (heart rate, HRV, voice, facial expression, text sentiment) into a unified stress score (0-100) with behavioral adaptation prompts. Includes trigger memory for cross-session psychological context and adaptation effectiveness feedback.",
+  "url": "https://mcp.nefesh.ai/a2a",
+  "provider": {
+    "name": "Nefesh AI",
+    "url": "https://nefesh.ai",
+    "support_contact": "Tom.Stuhl@nefesh.ai"
+  },
+  "capabilities": {
+    "a2aVersion": "1.0.0",
+    "mcpVersion": "2025-03-26",
+    "supportedMessageParts": ["text/plain", "application/json"],
+    "supportsPushNotifications": false
+  },
+  "authSchemes": [
+    {
+      "type": "apiKey",
+      "in": "header",
+      "name": "X-Nefesh-Key"
+    },
+    {
+      "type": "http",
+      "scheme": "bearer"
+    }
+  ],
+  "skills": [
+    {
+      "id": "get-human-state",
+      "name": "Get Human State",
+      "description": "Returns current stress state (0-100), suggested_action (maintain/simplify/de-escalate/pause), and adaptation_effectiveness showing whether your previous action reduced stress.",
+      "tags": ["biometrics", "stress", "adaptation"],
+      "examples": ["How stressed is the user right now?", "What state is session abc in?"],
+      "input_modes": ["application/json"],
+      "output_modes": ["application/json"]
+    },
+    {
+      "id": "ingest-signals",
+      "name": "Ingest Biometric Signals",
+      "description": "Send biometric signals (heart rate, HRV, voice tone, expression, sentiment, 30+ fields) and receive unified state. Include subject_id for cross-session trigger memory.",
+      "tags": ["biometrics", "signals", "ingest"],
+      "examples": ["Send heart rate 92 bpm with tense tone", "Ingest cardiovascular and vocal signals"],
+      "input_modes": ["application/json"],
+      "output_modes": ["application/json"]
+    },
+    {
+      "id": "get-trigger-memory",
+      "name": "Get Trigger Memory",
+      "description": "Retrieve psychological trigger profile — which conversation topics cause stress (active) and which have been resolved over time.",
+      "tags": ["triggers", "psychology", "memory"],
+      "examples": ["What stresses this user?", "Which topics are resolved?"],
+      "input_modes": ["application/json"],
+      "output_modes": ["application/json"]
+    },
+    {
+      "id": "get-session-history",
+      "name": "Get Session History",
+      "description": "Timestamped state history with trend (rising/falling/stable). Useful for detecting stress patterns during conversations.",
+      "tags": ["history", "trends"],
+      "examples": ["Show stress trend for the last 5 minutes"],
+      "input_modes": ["application/json"],
+      "output_modes": ["application/json"]
+    }
+  ],
+  "tags": ["health", "biometrics", "stress", "adaptation", "human-state", "mcp-native"],
+  "iconUrl": "https://nefesh.ai/icon.png",
+  "privacyPolicyUrl": "https://nefesh.ai/docs/privacy",
+  "termsOfServiceUrl": "https://nefesh.ai/terms"
+}

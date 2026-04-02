@@ -36,7 +36,7 @@ mcp = FastMCP(
         "Human State Fusion — send any body signal, "
         "get a unified state for your LLM. "
         "Includes trigger memory for cross-session context. "
-        "Not a medical device. Version 6.0.0."
+        "Not a medical device. MCP + A2A native. Version 6.1.0."
     ),
 )
 
