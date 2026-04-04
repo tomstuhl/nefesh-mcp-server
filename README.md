@@ -233,12 +233,19 @@ nefesh state test --json
 
 GitHub: [nefesh-ai/nefesh-cli](https://github.com/nefesh-ai/nefesh-cli)
 
+## Gateway Alternative
+
+Want the AI to adapt automatically? Use the Nefesh Cognitive Compute Router. Change your LLM base URL to `gateway.nefesh.ai` and the gateway adjusts system prompt and temperature based on biometric state. Zero code changes.
+
+GitHub: [nefesh-ai/nefesh-gateway](https://github.com/nefesh-ai/nefesh-gateway)
+
 ## Documentation
 
 - [Full API Reference](https://nefesh.ai/llms-full.txt)
 - [Quick Start](https://nefesh.ai/docs/quickstart)
 - [State Mapping](https://nefesh.ai/docs/states)
 - [CLI](https://github.com/nefesh-ai/nefesh-cli)
+- [Gateway](https://github.com/nefesh-ai/nefesh-gateway)
 - [A2A Agent Card](https://mcp.nefesh.ai/.well-known/agent-card.json)
 - [A2A Protocol Spec](https://a2a-protocol.org/latest/specification/)
 
