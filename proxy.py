@@ -191,6 +191,46 @@ async def get_session_history(session_id: str, minutes: int = 5) -> dict:
         return {"error": f"No history found for session {session_id}."}
 
 
+# ── Tool: request_api_key (no auth required) ──────────────────
+@mcp.tool()
+async def request_api_key(email: str) -> dict:
+    """Request a free Nefesh API key. No existing key needed.
+
+    Works like npm login: provide your email, receive a key instantly.
+    Free tier: 1,000 API calls/month, no credit card required.
+
+    The returned key starts with 'nk_'. Store it and use it for all other tools.
+    """
+    async with httpx.AsyncClient(timeout=10) as client:
+        resp = await client.post(
+            f"{API_URL}/v1/keys/request",
+            json={"email": email},
+            headers={"Content-Type": "application/json"},
+        )
+        if resp.status_code == 200:
+            return resp.json()
+        return {"error": f"API returned {resp.status_code}. Check your email address."}
+
+
+# ── Tool: check_api_key_status (no auth required) ─────────────
+@mcp.tool()
+async def check_api_key_status(email: str) -> dict:
+    """Check the status of a pending API key request.
+
+    Use the same email you provided to request_api_key.
+    Returns the key status and the key itself once approved.
+    """
+    async with httpx.AsyncClient(timeout=10) as client:
+        resp = await client.get(
+            f"{API_URL}/v1/keys/status",
+            params={"email": email},
+            headers={"Content-Type": "application/json"},
+        )
+        if resp.status_code == 200:
+            return resp.json()
+        return {"error": f"No pending request found for {email}."}
+
+
 # ── Run ─────────────────────────────────────────────────────────
 if __name__ == "__main__":
     mcp.run(transport="stdio")
