@@ -235,7 +235,7 @@ GitHub: [nefesh-ai/nefesh-cli](https://github.com/nefesh-ai/nefesh-cli)
 
 ## Gateway Alternative
 
-Want the AI to adapt automatically? Use the Nefesh Cognitive Compute Router. Change your LLM base URL to `gateway.nefesh.ai` and the gateway adjusts system prompt and temperature based on biometric state. Zero code changes.
+Want the AI to adapt automatically? Use the [Nefesh Cognitive Compute Router](https://gateway.nefesh.ai). Change your LLM base URL to `gateway.nefesh.ai` and the gateway adjusts system prompt and temperature based on biometric state. Three modes: OpenAI-compatible (`/v1/chat/completions`), Anthropic passthrough (`/v1/messages`), and Unified Anthropic for any backend. Zero code changes.
 
 GitHub: [nefesh-ai/nefesh-gateway](https://github.com/nefesh-ai/nefesh-gateway)
 
