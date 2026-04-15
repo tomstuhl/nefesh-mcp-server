@@ -189,8 +189,8 @@ Source: [nefesh-ai/nefesh-a2a](https://github.com/nefesh-ai/nefesh-a2a) · Docs:
 
 | Tool | Auth | Description |
 |------|:---:|-------------|
-| `request_api_key` | No | Request a free API key by email. Poll with `check_api_key_status` until ready. |
-| `check_api_key_status` | No | Poll for API key activation. Returns `pending` or `ready` with API key. |
+| `request_api_key` | No | Request a free API key. You MUST ask the user for their real email first. Do not invent or guess emails. The user receives a verification link they must click. Poll with `check_api_key_status` until ready. |
+| `check_api_key_status` | No | Poll for API key activation using the same email the user provided. Returns `pending` or `ready` with API key. |
 | `get_human_state` | Yes | Get stress state (0-100), `suggested_action` (maintain/simplify/de-escalate/pause), and `adaptation_effectiveness` — a closed-loop showing whether your previous action reduced stress. |
 | `ingest` | Yes | Send biometric signals (heart rate, HRV, voice tone, expression, sentiment, 30+ fields) and get unified state back. Include `subject_id` for trigger memory. |
 | `get_trigger_memory` | Yes | Get psychological trigger profile — which topics cause stress (active) and which have been resolved over time. |
@@ -200,10 +200,13 @@ Source: [nefesh-ai/nefesh-a2a](https://github.com/nefesh-ai/nefesh-a2a) · Docs:
 
 Your AI agent can get a free API key autonomously. You only click one email link.
 
-1. Agent calls `request_api_key(email)` — no API key needed for this call
-2. You receive a verification email and click the link
-3. Agent polls `check_api_key_status(request_id)` every 10 seconds
-4. Once verified, the agent receives the API key and can use all other tools
+1. Agent asks you: "What is your email address?"
+2. Agent calls `request_api_key(your_real_email)`. No API key needed for this call.
+3. You receive a verification email and click the link
+4. Agent polls `check_api_key_status(your_real_email)` every 10 seconds
+5. Once verified, the agent receives the API key and can use all other tools
+
+**Important:** The agent must use your real, accessible email address. Disposable emails are blocked. The verification link must be clicked by you to activate the key.
 
 Free tier: 1,000 calls/month, all signal types, 10 req/min. No credit card.
 

@@ -196,10 +196,19 @@ async def get_session_history(session_id: str, minutes: int = 5) -> dict:
 async def request_api_key(email: str) -> dict:
     """Request a free Nefesh API key. No existing key needed.
 
-    Works like npm login: provide your email, receive a key instantly.
-    Free tier: 1,000 API calls/month, no credit card required.
+    IMPORTANT: You MUST ask the user for their real email address before
+    calling this tool. Do NOT invent, guess, or generate an email address.
+    The user will receive a verification link they must click to activate
+    the key. Without clicking that link, no API key will be issued.
+    Disposable or temporary email services are blocked.
 
-    The returned key starts with 'nk_'. Store it and use it for all other tools.
+    Example prompt to the user: "What is your email address? You will
+    receive a verification link to activate your free API key."
+
+    Flow: call this with the user's real email, then poll
+    check_api_key_status every 10 seconds until status is 'ready'.
+
+    Free tier: 1,000 API calls/month, no credit card required.
     """
     async with httpx.AsyncClient(timeout=10) as client:
         resp = await client.post(
@@ -217,8 +226,10 @@ async def request_api_key(email: str) -> dict:
 async def check_api_key_status(email: str) -> dict:
     """Check the status of a pending API key request.
 
-    Use the same email you provided to request_api_key.
-    Returns the key status and the key itself once approved.
+    Use the exact same email the user provided to request_api_key.
+    Poll this every 10 seconds. Once the user clicks the verification
+    link in their inbox, status changes from 'pending' to 'ready'
+    and the response includes the API key.
     """
     async with httpx.AsyncClient(timeout=10) as client:
         resp = await client.get(
