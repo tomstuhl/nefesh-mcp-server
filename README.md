@@ -49,7 +49,7 @@ Add the config **without an API key** — your agent will get one automatically.
 
 Then ask your agent:
 
-> "Connect to Nefesh and get me a free API key for name@example.com"
+> "Get me a free Nefesh API key using my email address"
 
 The agent calls `request_api_key` → you click one email link → the agent picks up the key. No signup form, no manual copy-paste. After that, add the key to your config for future sessions:
 
